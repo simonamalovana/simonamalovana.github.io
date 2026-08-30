@@ -24,8 +24,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Build static site
         run: |
-          python3 -m py_compile scripts/build_v2.py
-          python3 scripts/build_v2.py
+          python3 -m py_compile scripts/build_v3.py
+          python3 scripts/build_v3.py
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload Pages artifact
