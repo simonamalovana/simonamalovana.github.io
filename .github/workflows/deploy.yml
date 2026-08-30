@@ -23,7 +23,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Build static site
-        run: python3 scripts/build.py
+        run: |
+          sed -i 's/{filtersM/{filters}/' scripts/build.py
+          python3 -m py_compile scripts/build.py
+          python3 scripts/build.py
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload Pages artifact
