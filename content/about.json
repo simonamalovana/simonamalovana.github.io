@@ -1,0 +1,19 @@
+{
+  "intro": [
+    "I am an economist and policy strategist working at the intersection of central banking, research, and statistics.",
+    "Currently, I serve as Executive Director of the Research and Statistics Department at the Czech National Bank (CNB), where I lead analytical, research and statistical teams and contribute to the Bank's forecasting framework and evidence-based policymaking.",
+    "My work combines academic research with policy practice, with a focus on monetary policy, financial stability, macro-financial linkages, banking, and the distributional effects of central bank policies. I also work on climate and geopolitical risks and on modernising data and analytical processes in central banking."
+  ],
+  "roles": [
+    {"period":"2025–present","role":"Executive Director, Research and Statistics Department","institution":"Czech National Bank"},
+    {"period":"2019–2024","role":"Director, Financial Research Division, Financial Stability Department","institution":"Czech National Bank"},
+    {"period":"2014–2019","role":"Team Lead / Economist, Financial Stability Department","institution":"Czech National Bank"},
+    {"period":"2025–present","role":"Assistant Professor (part-time)","institution":"Faculty of Social Sciences, Charles University"},
+    {"period":"2022–present","role":"Research Fellow (part-time)","institution":"Prague University of Economics and Business"}
+  ],
+  "networks": [
+    {"name":"International Banking Research Network (IBRN)","period":"2021–present","url":"https://www.newyorkfed.org/research/banking-research/international-banking-research-network"},
+    {"name":"ESCB Research Network – Challenges for Monetary Policy Transmission in a Changing World (ChaMP)","period":"2023–present","url":"https://www.ecb.europa.eu/pub/economic-research/research-networks/html/champ.en.html"},
+    {"name":"Former Coordinator, ESCB Research Cluster 3: Financial Stability, Macroprudential Regulation and Supervision","period":"2020–2021"}
+  ]
+}
