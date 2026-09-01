@@ -86,7 +86,10 @@ button, input { font: inherit; }
 .external { margin-left: 4px; color: var(--accent); font-size: .7em; }
 .no-results { padding: 28px 0; color: var(--muted); }
 .presentation-shell { max-width: 980px; }
+.year-nav { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 0 0 22px; padding: 0 0 16px; border-bottom: 1px solid var(--line); color: var(--accent-dark); font-size: .82rem; font-weight: 500; }
+.year-nav a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .year-group { display: grid; grid-template-columns: 90px 1fr; gap: 34px; padding: 6px 0 30px; }
+.year-group, .organized-section { scroll-margin-top: 24px; }
 .year-group > h2 { margin: 8px 0 0; font-size: .92rem; font-weight: 500; color: var(--ink); }
 .presentation-row, .organized-row { display: grid; grid-template-columns: 118px 1fr; gap: 26px; padding: 17px 0; border-top: 1px solid var(--soft-line); }
 .presentation-meta { color: var(--accent-dark); font-size: .82rem; font-weight: 500; }

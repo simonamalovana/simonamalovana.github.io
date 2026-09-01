@@ -6,7 +6,7 @@ Source for Simona Malovaná's personal website. The site is intentionally depend
 
 - GitHub is the single source of truth.
 - Research, policy items and events are stored once in `content/*.json`.
-- Homepage `Latest` is generated automatically from dated content.
+- Homepage `Recent` is generated automatically from dated content and removes duplicate titles.
 - `Upcoming` is generated automatically from future events.
 - A scheduled GitHub Action rebuilds the site daily, so events disappear from `Upcoming` after their date without manual editing.
 - No database, CMS, JavaScript framework or paid hosting is required.
@@ -14,7 +14,8 @@ Source for Simona Malovaná's personal website. The site is intentionally depend
 ## Local build
 
 ```bash
-python3 scripts/build.py
+python3 scripts/build_v4.py
+python3 scripts/enrich_presentation_links.py
 python3 -m http.server 8000 -d dist
 ```
 
@@ -28,6 +29,8 @@ Then open `http://localhost:8000`.
 - `content/about.json` — biography, roles and networks
 - `content/site.json` — site-wide metadata and profile links
 - `content/photos.json` — press / conference photographs
+- `assets/images/` — locally hosted website and press photographs
+- `assets/files/` — locally hosted CV and downloadable files
 
 ## Publishing
 

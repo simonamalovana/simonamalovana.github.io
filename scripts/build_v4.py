@@ -57,7 +57,7 @@ def nav(active):
     for key, href, label in links:
         cls = ' class="active" aria-current="page"' if key == active else ""
         out.append(f'<a href="{href}"{cls}>{label}</a>')
-    out.append('<a href="https://simonamalovana.com/s/CV-Malovana.pdf">CV ↗</a>')
+    out.append('<a href="/assets/files/CV-Simona-Malovana.pdf">CV ↗</a>')
     return "".join(out)
 
 
@@ -70,6 +70,7 @@ def layout(title, body, active="", description=None):
     page_title = site["name"] if title == "Home" else f"{title} — {site['name']}"
     desc = description or site["description"]
     canonical = canonical_for(active)
+    og_image = site["hero_image"] if site["hero_image"].startswith("http") else f"https://simonamalovana.com{site['hero_image']}"
     return f'''<!doctype html>
 <html lang="en">
 <head>
@@ -81,7 +82,7 @@ def layout(title, body, active="", description=None):
   <meta property="og:description" content="{esc(desc)}">
   <meta property="og:type" content="website">
   <meta property="og:url" content="{esc(canonical)}">
-  <meta property="og:image" content="{esc(site['hero_image'])}">
+  <meta property="og:image" content="{esc(og_image)}">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="{esc(canonical)}">
   <link rel="stylesheet" href="/assets/site-v4.css">
@@ -198,8 +199,17 @@ def presentation_row(item):
     </article>'''
 
 
-recent_items = [x for x in (research + policy) if x.get("type") != "talk" and parse_date(x["date"]) <= TODAY]
-recent_items = sorted(recent_items, key=lambda x: x["date"], reverse=True)[:4]
+recent_candidates = [x for x in (research + policy) if x.get("type") != "talk" and parse_date(x["date"]) <= TODAY]
+recent_items = []
+seen_recent_titles = set()
+for item in sorted(recent_candidates, key=lambda x: x["date"], reverse=True):
+    key = item["title"].casefold().strip()
+    if key in seen_recent_titles:
+        continue
+    seen_recent_titles.add(key)
+    recent_items.append(item)
+    if len(recent_items) == 4:
+        break
 upcoming = sorted([x for x in events if parse_date(x["date"]) >= TODAY], key=lambda x: x["date"])
 
 home_body = f'''
@@ -216,7 +226,7 @@ home_body = f'''
         <a href="{esc(site['orcid'])}">ORCID ↗</a>
       </div>
     </div>
-    <figure class="hero-photo"><img src="{esc(site['hero_image'])}" alt="{esc(site['hero_image_alt'])}"><figcaption>Photo: Czech National Bank</figcaption></figure>
+    <figure class="hero-photo"><img src="{esc(site['hero_image'])}" alt="{esc(site['hero_image_alt'])}" fetchpriority="high" decoding="async"><figcaption>Photo: Czech National Bank</figcaption></figure>
   </div>
 </section>
 <section class="home-section">
@@ -262,7 +272,10 @@ years = sorted({x["year"] for x in presentations}, reverse=True)
 year_sections = []
 for year in years:
     rows = "".join(presentation_row(x) for x in presentations if x["year"] == year)
-    year_sections.append(f'<section class="year-group"><h2>{year}</h2><div>{rows}</div></section>')
+    year_sections.append(f'<section class="year-group" id="year-{year}"><h2>{year}</h2><div>{rows}</div></section>')
+
+year_links = "".join(f'<a href="#year-{year}">{year}</a>' for year in years)
+year_nav = f'<nav class="year-nav" aria-label="Presentation years">{year_links}<a href="#organized">Organized</a></nav>'
 
 organized_rows_parts = []
 for item in organized:
@@ -271,19 +284,19 @@ for item in organized:
 organized_rows = "".join(organized_rows_parts)
 presentations_body = f'''
 <section class="page-head"><div class="shell narrow"><span class="signature-rule" aria-hidden="true"></span><h1>Presentations</h1><p>Talks, conference presentations, research seminars, panels and discussions.</p></div></section>
-<section class="content-section"><div class="shell presentation-shell">{''.join(year_sections)}<section class="organized-section"><h2>Organized conferences & workshops</h2><div>{organized_rows}</div></section></div></section>
+<section class="content-section"><div class="shell presentation-shell">{year_nav}{''.join(year_sections)}<section class="organized-section" id="organized"><h2>Organized conferences & workshops</h2><div>{organized_rows}</div></section></div></section>
 '''
 
 
 roles_html = "".join(f'''<div class="timeline-row"><div>{esc(r["period"])}</div><div><h3>{esc(r["role"])}</h3><p>{esc(r["institution"])}</p></div></div>''' for r in about["roles"])
-networks_html = "".join(f'''<li><strong>{esc(n["name"])}</strong><span>{esc(n.get("period",""))}</span></li>''' for n in about["networks"])
+networks_html = "".join(f'''<li><strong>{f'<a href="{esc(n["url"])}">{esc(n["name"])}{external_icon()}</a>' if n.get('url') else esc(n['name'])}</strong><span>{esc(n.get("period",""))}</span></li>''' for n in about["networks"])
 about_body = f'''
 <section class="page-head"><div class="shell narrow"><span class="signature-rule" aria-hidden="true"></span><h1>About</h1>{''.join(f'<p>{esc(p)}</p>' for p in about["intro"])}</div></section>
 <section class="content-section"><div class="shell about-grid"><div><h2>Experience</h2>{roles_html}</div><aside><h2>Research networks</h2><ul class="network-list">{networks_html}</ul><div class="identity-links"><a href="{esc(site['orcid'])}">ORCID ↗</a><a href="{esc(site['scholar'])}">Google Scholar ↗</a><a href="{esc(site['repec'])}">IDEAS/RePEc ↗</a></div></aside></div></section>
 '''
 
 
-photo_html = "".join(f'<figure><img loading="lazy" src="{esc(p["url"])}" alt="{esc(p["alt"])}"></figure>' for p in photos)
+photo_html = "".join(f'<figure><img loading="lazy" decoding="async" src="{esc(p["url"])}" alt="{esc(p["alt"])}"></figure>' for p in photos)
 photos_body = f'''
 <section class="page-head"><div class="shell narrow"><span class="signature-rule" aria-hidden="true"></span><h1>Photos</h1><p>For media and conference use. Please credit the Czech National Bank.</p></div></section>
 <section class="content-section"><div class="shell"><div class="photo-grid">{photo_html}</div></div></section>
@@ -304,6 +317,8 @@ for sub in ("research", "policy", "presentations", "about", "photos", "assets"):
 (DIST / "photos" / "index.html").write_text(layout("Photos", photos_body, "photos"), encoding="utf-8")
 shutil.copy2(ASSETS / "site-v4.css", DIST / "assets" / "site-v4.css")
 shutil.copy2(ASSETS / "site.js", DIST / "assets" / "site.js")
+shutil.copytree(ASSETS / "images", DIST / "assets" / "images", dirs_exist_ok=True)
+shutil.copytree(ASSETS / "files", DIST / "assets" / "files", dirs_exist_ok=True)
 
 paths = ["", "research/", "policy/", "presentations/", "about/", "photos/"]
 sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(f"  <url><loc>https://simonamalovana.com/{p}</loc></url>\n" for p in paths) + "</urlset>\n"
