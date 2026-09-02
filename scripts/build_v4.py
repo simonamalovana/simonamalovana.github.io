@@ -70,7 +70,17 @@ def layout(title, body, active="", description=None):
     page_title = site["name"] if title == "Home" else f"{title} — {site['name']}"
     desc = description or site["description"]
     canonical = canonical_for(active)
-    og_image = site["hero_image"] if site["hero_image"].startswith("http") else f"https://simonamalovana.com{site['hero_image']}"
+    og_source = site.get("og_image", site["hero_image"])
+    og_image = og_source if og_source.startswith("http") else f"https://simonamalovana.com{og_source}"
+    person_schema = json.dumps({
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": site["name"],
+        "url": "https://simonamalovana.com/",
+        "jobTitle": "Executive Director, Research and Statistics Department",
+        "worksFor": {"@type": "Organization", "name": "Czech National Bank", "url": "https://www.cnb.cz/"},
+        "sameAs": [site["scholar"], site["repec"], site["orcid"], site["github"]],
+    }, ensure_ascii=False)
     return f'''<!doctype html>
 <html lang="en">
 <head>
@@ -83,10 +93,13 @@ def layout(title, body, active="", description=None):
   <meta property="og:type" content="website">
   <meta property="og:url" content="{esc(canonical)}">
   <meta property="og:image" content="{esc(og_image)}">
+  <meta property="og:image:alt" content="{esc(site['hero_image_alt'])}">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="{esc(canonical)}">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/assets/site-v4.css">
   <link rel="alternate" type="application/rss+xml" title="Simona Malovaná — latest work" href="/feed.xml">
+  <script type="application/ld+json">{person_schema}</script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -96,7 +109,7 @@ def layout(title, body, active="", description=None):
       <nav class="main-nav" aria-label="Main navigation">{nav(active)}</nav>
     </div>
   </header>
-  <main id="main">{body}</main>
+  <main id="main" tabindex="-1">{body}</main>
   <footer class="site-footer">
     <div class="shell footer-grid">
       <div class="footer-primary"><strong>Simona Malovaná</strong><p>{esc(site['disclaimer'])}</p></div>
@@ -144,6 +157,7 @@ def work_row(item, show_topics=True):
     authors = item.get("authors", "")
     venue = item.get("venue", "")
     status = item.get("status", "")
+    note = item.get("note", "")
     groups = broad_topics(item)
     topic_html = ""
     if show_topics:
@@ -151,8 +165,9 @@ def work_row(item, show_topics=True):
     return f'''<article class="work-card" data-kind="{esc(item.get('type',''))}" data-topics="{esc('|'.join(groups))}">
       <div class="work-aside"><span>{esc(month_year(item['date']))}</span><span>{esc(item.get('type','').replace('-', ' ').title())}</span></div>
       <div class="work-main">
-        <h3>{title_html}</h3>
+        <h2>{title_html}</h2>
         {f'<p class="authors">with {esc(authors)}</p>' if authors else ''}
+        {f'<p class="note">{esc(note)}</p>' if note else ''}
         <p class="venue">{esc(venue)}</p>
         {f'<p class="status">{esc(status)}</p>' if status else ''}
         {topic_html}
@@ -199,7 +214,12 @@ def presentation_row(item):
     </article>'''
 
 
-recent_candidates = [x for x in (research + policy) if x.get("type") != "talk" and parse_date(x["date"]) <= TODAY]
+recent_candidates = [
+    x for x in (research + policy)
+    if x.get("type") not in {"talk", "work-in-progress"}
+    and x.get("url")
+    and parse_date(x["date"]) <= TODAY
+]
 recent_items = []
 seen_recent_titles = set()
 for item in sorted(recent_candidates, key=lambda x: x["date"], reverse=True):
@@ -244,16 +264,16 @@ home_body = f'''
 '''
 
 
-topic_buttons = "".join(f'<button type="button" class="topic-button" data-filter-topic="{key}">{label}</button>' for key, label in TOPIC_LABELS)
+topic_buttons = "".join(f'<button type="button" class="topic-button" data-filter-topic="{key}" aria-pressed="false">{label}</button>' for key, label in TOPIC_LABELS)
 research_sorted = sorted(research, key=lambda x: x["date"], reverse=True)
 research_body = f'''
 <section class="page-head"><div class="shell narrow"><span class="signature-rule" aria-hidden="true"></span><h1>Research</h1><p>Publications, working papers and ongoing work.</p></div></section>
 <section class="content-section"><div class="shell index-shell">
   <div class="filter-panel" data-filter-scope>
-    <div class="filter-main"><div class="type-filter"><button type="button" class="text-filter active" data-filter-kind="all">All</button><button type="button" class="text-filter" data-filter-kind="publication">Publications</button><button type="button" class="text-filter" data-filter-kind="working-paper">Working papers</button><button type="button" class="text-filter" data-filter-kind="work-in-progress">Work in progress</button></div><input class="search-input" type="search" placeholder="Search" aria-label="Search research" data-filter-search></div>
+    <div class="filter-main"><div class="type-filter"><button type="button" class="text-filter active" data-filter-kind="all" aria-pressed="true">All</button><button type="button" class="text-filter" data-filter-kind="publication" aria-pressed="false">Publications</button><button type="button" class="text-filter" data-filter-kind="working-paper" aria-pressed="false">Working papers</button><button type="button" class="text-filter" data-filter-kind="work-in-progress" aria-pressed="false">Work in progress</button></div><input class="search-input" type="search" placeholder="Search" aria-label="Search research" data-filter-search></div>
     <details class="topic-filter"><summary>Filter by topic</summary><div class="topic-options">{topic_buttons}</div></details>
   </div>
-  <div class="work-list" data-filter-list>{''.join(work_row(x) for x in research_sorted)}</div><p class="no-results" data-no-results hidden>No matching research items.</p>
+  <div class="work-list" data-filter-list>{''.join(work_row(x) for x in research_sorted)}</div><p class="no-results" data-no-results role="status" aria-live="polite" hidden>No matching research items.</p>
 </div></section>
 '''
 
@@ -262,8 +282,8 @@ policy_items = sorted([x for x in policy if x.get("type") != "talk"], key=lambda
 policy_body = f'''
 <section class="page-head"><div class="shell narrow"><span class="signature-rule" aria-hidden="true"></span><h1>Policy</h1><p>Selected policy publications, central-bank notes and media contributions.</p></div></section>
 <section class="content-section"><div class="shell index-shell">
-  <div class="filter-panel" data-filter-scope><div class="filter-main"><div class="type-filter"><button type="button" class="text-filter active" data-filter-kind="all">All</button><button type="button" class="text-filter" data-filter-kind="policy">Policy publications</button><button type="button" class="text-filter" data-filter-kind="media">Media</button></div><input class="search-input" type="search" placeholder="Search" aria-label="Search policy" data-filter-search></div></div>
-  <div class="work-list" data-filter-list>{''.join(work_row(x, show_topics=False) for x in policy_items)}</div><p class="no-results" data-no-results hidden>No matching items.</p>
+  <div class="filter-panel" data-filter-scope><div class="filter-main"><div class="type-filter"><button type="button" class="text-filter active" data-filter-kind="all" aria-pressed="true">All</button><button type="button" class="text-filter" data-filter-kind="policy" aria-pressed="false">Policy publications</button><button type="button" class="text-filter" data-filter-kind="media" aria-pressed="false">Media</button></div><input class="search-input" type="search" placeholder="Search" aria-label="Search policy" data-filter-search></div></div>
+  <div class="work-list" data-filter-list>{''.join(work_row(x, show_topics=False) for x in policy_items)}</div><p class="no-results" data-no-results role="status" aria-live="polite" hidden>No matching items.</p>
 </div></section>
 '''
 
@@ -280,7 +300,7 @@ year_nav = f'<nav class="year-nav" aria-label="Presentation years">{year_links}<
 organized_rows_parts = []
 for item in organized:
     title_html = f'<a href="{esc(item["url"])}">{esc(item["event"])}{external_icon()}</a>' if item.get("url") else esc(item["event"])
-    organized_rows_parts.append(f'''<article class="organized-row"><div class="presentation-meta">{esc(item["date_label"])}</div><div><h3>{title_html}</h3>{f'<p class="venue">{esc(item["location"])}</p>' if item.get("location") else ''}</div></article>''')
+    organized_rows_parts.append(f'''<article class="organized-row"><div class="presentation-meta">{esc(item["date_label"])}</div><div><h3>{title_html}</h3>{f'<p>{esc(item["role"])}</p>' if item.get("role") else ''}{f'<p class="venue">{esc(item["location"])}</p>' if item.get("location") else ''}</div></article>''')
 organized_rows = "".join(organized_rows_parts)
 presentations_body = f'''
 <section class="page-head"><div class="shell narrow"><span class="signature-rule" aria-hidden="true"></span><h1>Presentations</h1><p>Talks, conference presentations, research seminars, panels and discussions.</p></div></section>
@@ -296,7 +316,7 @@ about_body = f'''
 '''
 
 
-photo_html = "".join(f'<figure><img loading="lazy" decoding="async" src="{esc(p["url"])}" alt="{esc(p["alt"])}"></figure>' for p in photos)
+photo_html = "".join(f'<figure><a href="{esc(p["url"])}" download><img loading="lazy" decoding="async" src="{esc(p["url"])}" alt="{esc(p["alt"])}"></a><figcaption><a href="{esc(p["url"])}" download>Download high-resolution image</a></figcaption></figure>' for p in photos)
 photos_body = f'''
 <section class="page-head"><div class="shell narrow"><span class="signature-rule" aria-hidden="true"></span><h1>Photos</h1><p>For media and conference use. Please credit the Czech National Bank.</p></div></section>
 <section class="content-section"><div class="shell"><div class="photo-grid">{photo_html}</div></div></section>
@@ -309,14 +329,15 @@ DIST.mkdir(parents=True)
 for sub in ("research", "policy", "presentations", "about", "photos", "assets"):
     (DIST / sub).mkdir()
 
-(DIST / "index.html").write_text(layout("Home", home_body, "home"), encoding="utf-8")
-(DIST / "research" / "index.html").write_text(layout("Research", research_body, "research"), encoding="utf-8")
-(DIST / "policy" / "index.html").write_text(layout("Policy", policy_body, "policy"), encoding="utf-8")
-(DIST / "presentations" / "index.html").write_text(layout("Presentations", presentations_body, "presentations"), encoding="utf-8")
-(DIST / "about" / "index.html").write_text(layout("About", about_body, "about"), encoding="utf-8")
-(DIST / "photos" / "index.html").write_text(layout("Photos", photos_body, "photos"), encoding="utf-8")
+(DIST / "index.html").write_text(layout("Home", home_body, "home", "Simona Malovaná is Executive Director of Research and Statistics at the Czech National Bank and researches monetary and macroprudential policy, banking and financial stability."), encoding="utf-8")
+(DIST / "research" / "index.html").write_text(layout("Research", research_body, "research", "Publications, working papers and ongoing research by Simona Malovaná on monetary policy, macroprudential policy, banking and financial stability."), encoding="utf-8")
+(DIST / "policy" / "index.html").write_text(layout("Policy", policy_body, "policy", "Policy publications, central-bank notes and media contributions by Simona Malovaná."), encoding="utf-8")
+(DIST / "presentations" / "index.html").write_text(layout("Presentations", presentations_body, "presentations", "Conference presentations, research seminars, panels and discussions by Simona Malovaná, organized by year."), encoding="utf-8")
+(DIST / "about" / "index.html").write_text(layout("About", about_body, "about", "Professional experience, academic roles and research networks of Simona Malovaná."), encoding="utf-8")
+(DIST / "photos" / "index.html").write_text(layout("Photos", photos_body, "photos", "High-resolution photographs of Simona Malovaná for media and conference use."), encoding="utf-8")
 shutil.copy2(ASSETS / "site-v4.css", DIST / "assets" / "site-v4.css")
 shutil.copy2(ASSETS / "site.js", DIST / "assets" / "site.js")
+shutil.copy2(ASSETS / "favicon.svg", DIST / "assets" / "favicon.svg")
 shutil.copytree(ASSETS / "images", DIST / "assets" / "images", dirs_exist_ok=True)
 shutil.copytree(ASSETS / "files", DIST / "assets" / "files", dirs_exist_ok=True)
 
@@ -324,10 +345,25 @@ paths = ["", "research/", "policy/", "presentations/", "about/", "photos/"]
 sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(f"  <url><loc>https://simonamalovana.com/{p}</loc></url>\n" for p in paths) + "</urlset>\n"
 (DIST / "sitemap.xml").write_text(sitemap, encoding="utf-8")
 
-rss_items = sorted([x for x in research + policy if parse_date(x["date"]) <= TODAY], key=lambda x: x["date"], reverse=True)[:15]
+rss_candidates = [
+    x for x in research + policy
+    if x.get("type") not in {"talk", "work-in-progress"}
+    and x.get("url")
+    and parse_date(x["date"]) <= TODAY
+]
+rss_items = []
+seen_rss_titles = set()
+for item in sorted(rss_candidates, key=lambda x: x["date"], reverse=True):
+    key = item["title"].casefold().strip()
+    if key in seen_rss_titles:
+        continue
+    seen_rss_titles.add(key)
+    rss_items.append(item)
+    if len(rss_items) == 15:
+        break
 rss = ['<?xml version="1.0" encoding="UTF-8"?>', '<rss version="2.0"><channel>', f'<title>{esc(site["name"])} — latest work</title>', '<link>https://simonamalovana.com/</link>', f'<description>{esc(site["description"])}</description>']
 for item in rss_items:
-    link = item.get("url") or "https://simonamalovana.com/"
+    link = item["url"]
     rss += ["<item>", f'<title>{esc(item["title"])}</title>', f'<link>{esc(link)}</link>', f'<guid>{esc(link + "#" + quote(item["title"]))}</guid>', f'<pubDate>{parse_date(item["date"]).strftime("%a, %d %b %Y 00:00:00 +0000")}</pubDate>', "</item>"]
 rss.append("</channel></rss>")
 (DIST / "feed.xml").write_text("\n".join(rss), encoding="utf-8")

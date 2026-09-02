@@ -1,5 +1,8 @@
 {
   "presentations": [
+    {"year": 2026, "date_label": "Chaired keynote", "event": "Third Annual Czech National Bank Conference", "details": "“Looking Beyond Financial Stability: The Real and Distributional Effects of Mortgage Credit Constraints”", "location": "Prague, Czechia", "url": "https://www.cnb.cz/en/economic-research/conferences-seminars-and-workshops/2026-third-annual-czech-national-bank-conference/"},
+    {"year": 2026, "date_label": "Co-author", "event": "Third Annual Czech National Bank Conference", "details": "“Safe for Whom? Investment Flows to Sovereign Bonds During Global and Regional Stress” (presented by Alessandro Chiari)", "location": "Prague, Czechia", "url": "https://www.cnb.cz/en/economic-research/conferences-seminars-and-workshops/2026-third-annual-czech-national-bank-conference/"},
+    {"year": 2026, "date_label": "Presented", "event": "Research Connect Conference", "details": "“CNB Research Strategy: Priorities”", "location": "Prague, Czechia", "url": "https://www.cnb.cz/en/economic-research/conferences-seminars-and-workshops/2026-research-connect-conference-call-for-papers/"},
     {"year": 2026, "date_label": "Presented", "event": "SUERF–BAFFI Bocconi e-lecture: Financial stability risks from geoeconomic fragmentation", "details": "“Geopolitical Risks, Proximity and Cross-border Adjustments”", "location": "Online", "url": "https://www.youtube.com/"},
     {"year": 2026, "date_label": "Presented", "event": "46th Macroprudential Policy Group (MPPG) Meeting", "details": "“Macroprudential Policy and Income Inequality: Trade-off Between Crisis Prevention and Credit Redistribution”", "location": "Online"},
     {"year": 2025, "date_label": "Presented", "event": "IBRN Climate Workshop", "details": "“Decoding Climate-related Risks in Sovereign Bond Pricing: A Global Perspective”", "location": "Norges Bank, Oslo, Norway"},
@@ -47,6 +50,7 @@
     {"year": 2014, "date_label": "Presented", "event": "8th Biennial Conference of the Czech Economic Society", "details": "“Foreign Exchange Interventions at the Zero Lower Bound in the Czech Economy: A DSGE Approach”", "location": "Prague, Czech Republic"}
   ],
   "organized": [
+    {"date_label": "June 2026", "event": "Third Annual Czech National Bank Conference", "role": "Scientific committee", "location": "Czech National Bank, Prague, Czechia"},
     {"date_label": "June 2025", "event": "Annual International Journal of Central Banking Research Conference: Assessing the Effectiveness of Monetary Policy during and after the COVID-19 Pandemic", "location": "Czech National Bank, Prague, Czechia"},
     {"date_label": "April 2025", "event": "CNB Workshop on Monetary Policy: Inflation Targeting Frameworks Under Review", "location": "Czech National Bank, Prague, Czechia"},
     {"date_label": "December 2024", "event": "Czech National Bank Workshop on Financial Stability and Macroprudential Policy: Current Issues in Financial Stability, Macroprudential Policy, and Regulation", "location": "Czech National Bank, Prague, Czechia"},

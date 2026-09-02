@@ -24,8 +24,12 @@
 
   scope.querySelectorAll('[data-filter-kind]').forEach(button => {
     button.addEventListener('click', () => {
-      scope.querySelectorAll('[data-filter-kind]').forEach(b => b.classList.remove('active'));
+      scope.querySelectorAll('[data-filter-kind]').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed', 'false');
+      });
       button.classList.add('active');
+      button.setAttribute('aria-pressed', 'true');
       kind = button.dataset.filterKind;
       apply();
     });
@@ -33,9 +37,15 @@
   scope.querySelectorAll('[data-filter-topic]').forEach(button => {
     button.addEventListener('click', () => {
       const wasActive = button.classList.contains('active');
-      scope.querySelectorAll('[data-filter-topic]').forEach(b => b.classList.remove('active'));
+      scope.querySelectorAll('[data-filter-topic]').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed', 'false');
+      });
       topic = wasActive ? '' : button.dataset.filterTopic;
-      if (!wasActive) button.classList.add('active');
+      if (!wasActive) {
+        button.classList.add('active');
+        button.setAttribute('aria-pressed', 'true');
+      }
       apply();
     });
   });
