@@ -1,0 +1,78 @@
+/* Final pre-launch polish. Keep V4's visual language; only tighten responsive UX and small accessibility details. */
+
+.search-input::placeholder {
+  color: #76817f;
+  opacity: 1;
+}
+
+.section-head-links {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+}
+
+@media (max-width: 720px) {
+  .main-nav {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    gap: 4px 18px;
+  }
+
+  .main-nav a {
+    padding: 4px 0 5px;
+    line-height: 1.25;
+  }
+
+  .hero-grid {
+    gap: 26px;
+  }
+
+  .hero-photo {
+    width: min(100%, 340px);
+    order: 0;
+    justify-self: start;
+    margin-top: 2px;
+  }
+
+  .hero-photo img {
+    aspect-ratio: 4 / 5;
+    object-position: center 40%;
+  }
+
+  .home-section {
+    padding: 42px 0;
+  }
+
+  .section-head {
+    flex-wrap: wrap;
+    align-items: center;
+    row-gap: 8px;
+  }
+
+  .type-filter {
+    gap: 10px 18px;
+  }
+
+  .text-filter {
+    padding: 7px 0;
+  }
+
+  .topic-button {
+    padding: 5px 0;
+  }
+}
+
+@media (max-width: 420px) {
+  .main-nav {
+    gap: 4px 15px;
+  }
+
+  .main-nav a {
+    font-size: .82rem;
+  }
+
+  .hero-copy h1 {
+    font-size: clamp(2.65rem, 13vw, 3.4rem);
+  }
+}
