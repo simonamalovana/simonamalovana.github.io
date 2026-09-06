@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import json
 import re
 from pathlib import Path
 
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
+CONTENT = ROOT / "content"
 DIST = ROOT / "dist"
+site = json.loads((CONTENT / "site.json").read_text(encoding="utf-8"))
+email = site["email"]
 
 
 def require(condition: bool, message: str) -> None:
@@ -35,6 +39,7 @@ for page in pages:
         require(label in nav, f"Primary navigation is missing {label} on {page}")
     require('href="/personal/"' in html, f"Secondary Personal footer link missing on {page}")
     require('href="/photos/">Media photos</a>' in html, f"Media photos footer label missing on {page}")
+    require(f'href="mailto:{email}">Email</a>' in html, f"Contact email missing on {page}")
 
 home = (DIST / "index.html").read_text(encoding="utf-8")
 require('<a href="/research/">Research →</a>' in home, "Homepage Recent section is missing Research navigation")
@@ -43,6 +48,7 @@ require('<a href="/presentations/">Presentations →</a>' in home, "Homepage Upc
 profile_match = re.search(r'<div class="profile-links">.*?</div>', home, flags=re.S)
 require(profile_match is not None, "Homepage profile links block missing")
 require('/assets/files/CV-Simona-Malovana.pdf' in profile_match.group(0), "Hero CV link missing")
+require(f'mailto:{email}' in profile_match.group(0), "Hero contact email missing")
 require('/assets/images/simona-malovana-portrait.webp' in home, "Approved homepage hero photograph changed unexpectedly")
 
 photos_html = (DIST / "photos" / "index.html").read_text(encoding="utf-8")
@@ -68,7 +74,7 @@ for path in photos:
         require(max(image.size) <= 1400, f"Personal image exceeds launch dimension cap: {path.name} {image.size}")
 
 print(
-    "Pre-launch validation passed: concise primary navigation, secondary Personal/Media photos, "
-    "homepage hierarchy, approved hero, typography, tablet/mobile UX, accessibility and optimized "
-    f"Personal gallery ({total_bytes / 1024 / 1024:.1f} MiB) are ready."
+    "Pre-launch validation passed: concise primary navigation, visible contact email, secondary "
+    "Personal/Media photos, homepage hierarchy, approved hero, typography, tablet/mobile UX, "
+    f"accessibility and optimized Personal gallery ({total_bytes / 1024 / 1024:.1f} MiB) are ready."
 )
