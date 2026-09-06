@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -62,6 +63,7 @@ roles = {(item["role"], item["institution"]) for item in about["roles"]}
 require(("Managing Editor", "Czech Journal of Economics and Finance") in roles, "Managing Editor role missing")
 require(any(role == "Visiting Scholar" and "Central Bank of Ireland" in institution for role, institution in roles), "Central Bank of Ireland visit missing")
 
+# Preserve every legacy Personal image and page, but keep it out of the professional primary navigation.
 require(len(personal["photos"]) == 26, f"Personal gallery should contain 26 photos, found {len(personal['photos'])}")
 for photo in personal["photos"]:
     require((DIST / "assets" / "images" / "personal" / photo["file"]).exists(), f"Personal image missing from dist: {photo['file']}")
@@ -69,11 +71,22 @@ for photo in personal["photos"]:
 require((DIST / "personal" / "index.html").exists(), "Personal page not generated")
 personal_html = (DIST / "personal" / "index.html").read_text(encoding="utf-8")
 require("Some of my favorite places" in personal_html, "Personal gallery heading missing")
-require('href="/personal/" class="active" aria-current="page"' in personal_html, "Personal nav state missing")
 
-for page in ["index.html", "research/index.html", "policy/index.html", "presentations/index.html", "about/index.html"]:
+pages_with_global_navigation = [
+    "index.html",
+    "research/index.html",
+    "policy/index.html",
+    "presentations/index.html",
+    "about/index.html",
+    "personal/index.html",
+    "photos/index.html",
+]
+for page in pages_with_global_navigation:
     html = (DIST / page).read_text(encoding="utf-8")
-    require('href="/personal/"' in html, f"Personal nav link missing on {page}")
+    nav_match = re.search(r'<nav class="main-nav" aria-label="Main navigation">(.*?)</nav>', html, flags=re.S)
+    require(nav_match is not None, f"Main navigation missing on {page}")
+    require('href="/personal/"' not in nav_match.group(1), f"Personal must not appear in primary navigation on {page}")
+    require('href="/personal/"' in html, f"Personal footer link missing on {page}")
 
 research_html = (DIST / "research" / "index.html").read_text(encoding="utf-8")
 require("Gross-flow decompositions" in research_html, "Full Flight from the Front Line abstract was not rendered")
@@ -99,4 +112,4 @@ require("Czech National Bank republication" in policy_html, "Secondary Bankast/C
 cv = DIST / "assets" / "files" / "CV-Simona-Malovana.pdf"
 require(cv.exists() and cv.stat().st_size > 25_000, "Generated CV PDF missing or unexpectedly small")
 
-print("Migration validation passed: legacy content, exact resource links, audited updates, Personal gallery and generated CV are present.")
+print("Migration validation passed: legacy content, exact resource links, audited updates, secondary Personal gallery and generated CV are present.")
