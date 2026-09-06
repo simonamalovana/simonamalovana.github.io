@@ -22,11 +22,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Build static site
+      - name: Build current CV and static site
         run: |
-          python3 -m py_compile scripts/build_v4.py scripts/enrich_presentation_links.py
+          python3 -m pip install --disable-pip-version-check reportlab
+          python3 -m py_compile scripts/apply_cv_audit.py scripts/build_v4.py scripts/enrich_presentation_links.py scripts/enrich_work_details.py
+          python3 scripts/apply_cv_audit.py
+          python3 -m py_compile scripts/build_cv.py
+          python3 scripts/build_cv.py
           python3 scripts/build_v4.py
           python3 scripts/enrich_presentation_links.py
+          python3 scripts/enrich_work_details.py
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload Pages artifact
