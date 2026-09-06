@@ -27,6 +27,14 @@ pages = [
 for page in pages:
     html = (DIST / page).read_text(encoding="utf-8")
     require('/assets/prelaunch.css' in html, f"Pre-launch stylesheet missing on {page}")
+    nav_match = re.search(r'<nav class="main-nav" aria-label="Main navigation">(.*?)</nav>', html, flags=re.S)
+    require(nav_match is not None, f"Main navigation missing on {page}")
+    nav = nav_match.group(1)
+    require('href="/personal/"' not in nav, f"Personal is still in primary navigation on {page}")
+    for label in ["Research", "Policy", "Presentations", "About", "CV"]:
+        require(label in nav, f"Primary navigation is missing {label} on {page}")
+    require('href="/personal/"' in html, f"Secondary Personal footer link missing on {page}")
+    require('href="/photos/">Media photos</a>' in html, f"Media photos footer label missing on {page}")
 
 home = (DIST / "index.html").read_text(encoding="utf-8")
 require('<a href="/research/">Research →</a>' in home, "Homepage Recent section is missing Research navigation")
@@ -37,10 +45,17 @@ require(profile_match is not None, "Homepage profile links block missing")
 require('/assets/files/CV-Simona-Malovana.pdf' in profile_match.group(0), "Hero CV link missing")
 require('/assets/images/simona-malovana-portrait.webp' in home, "Approved homepage hero photograph changed unexpectedly")
 
+photos_html = (DIST / "photos" / "index.html").read_text(encoding="utf-8")
+require('<h1>Media photos</h1>' in photos_html, "Professional photo page is not clearly labelled Media photos")
+require('<title>Media photos — Simona Malovaná</title>' in photos_html, "Media photos page title missing")
+
 css = (DIST / "assets" / "prelaunch.css").read_text(encoding="utf-8")
-require('flex-wrap: wrap' in css and 'overflow-x: visible' in css, "Mobile navigation wrap polish missing")
+require('overflow-x: visible' in css, "Mobile navigation wrap polish missing")
+require('grid-template-columns: 1fr' in css and '@media (max-width: 900px)' in css, "Tablet hero should collapse to one column")
 require('order: 0' in css, "Mobile hero should keep identity copy before the photograph")
 require('#76817f' in css, "Accessible search placeholder contrast polish missing")
+require('font-size: .76rem' in css, "Small metadata typography polish missing")
+require('padding: 10px 0' in css, "Mobile filter tap-target polish missing")
 
 personal_dir = DIST / "assets" / "images" / "personal"
 photos = sorted(personal_dir.glob("*.jpg"))
@@ -53,6 +68,7 @@ for path in photos:
         require(max(image.size) <= 1400, f"Personal image exceeds launch dimension cap: {path.name} {image.size}")
 
 print(
-    "Pre-launch validation passed: homepage navigation, hero photo, mobile UX, "
-    f"accessibility polish and optimized Personal gallery ({total_bytes / 1024 / 1024:.1f} MiB) are ready."
+    "Pre-launch validation passed: concise primary navigation, secondary Personal/Media photos, "
+    "homepage hierarchy, approved hero, typography, tablet/mobile UX, accessibility and optimized "
+    f"Personal gallery ({total_bytes / 1024 / 1024:.1f} MiB) are ready."
 )
