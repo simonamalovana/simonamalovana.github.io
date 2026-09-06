@@ -44,27 +44,28 @@ personal_dir.mkdir(exist_ok=True)
 (personal_dir / "index.html").write_text(page, encoding="utf-8")
 
 
-def add_personal_nav(page_html: str, active: bool = False) -> str:
+# Personal content is preserved from the legacy website, but it is intentionally
+# secondary to the professional site architecture. Keep it in the footer rather
+# than promoting it to the primary navigation.
+def add_personal_footer(page_html: str) -> str:
     if 'href="/personal/"' in page_html:
         return page_html
-    match = re.search(r'<nav class="main-nav" aria-label="Main navigation">(.*?)</nav>', page_html, flags=re.S)
-    if not match:
+    footer_match = re.search(r'(<div class="footer-links">)(.*?)(</div>)', page_html, flags=re.S)
+    if not footer_match:
         return page_html
-    nav = match.group(1)
-    link = '<a href="/personal/">Personal</a>'
-    about_pos = nav.find('<a href="/about/"')
-    if about_pos >= 0:
-        nav = nav[:about_pos] + link + nav[about_pos:]
+    links = footer_match.group(2)
+    personal_link = '<a href="/personal/">Personal</a>'
+    photos_pos = links.find('<a href="/photos/">')
+    if photos_pos >= 0:
+        links = links[:photos_pos] + personal_link + links[photos_pos:]
     else:
-        nav += link
-    if active:
-        nav = nav.replace(link, '<a href="/personal/" class="active" aria-current="page">Personal</a>')
-    return page_html[:match.start(1)] + nav + page_html[match.end(1):]
+        links += personal_link
+    return page_html[:footer_match.start(2)] + links + page_html[footer_match.end(2):]
 
 
 for html_path in DIST.rglob("*.html"):
     current = html_path.read_text(encoding="utf-8")
-    current = add_personal_nav(current, active=(html_path == personal_dir / "index.html"))
+    current = add_personal_footer(current)
     html_path.write_text(current, encoding="utf-8")
 
 sitemap_path = DIST / "sitemap.xml"
@@ -83,4 +84,4 @@ css += """
 .personal-photo-grid figcaption { text-align: left; color: var(--muted); }
 """
 css_path.write_text(css, encoding="utf-8")
-print(f"Built Personal page with {len(data['photos'])} legacy photos.")
+print(f"Built Personal page with {len(data['photos'])} legacy photos as a secondary footer destination.")
