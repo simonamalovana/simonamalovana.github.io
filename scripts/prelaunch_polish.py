@@ -28,6 +28,21 @@ for html_path in DIST.rglob("*.html"):
             '<link rel="stylesheet" href="/assets/site-v4.css">\n  <link rel="stylesheet" href="/assets/prelaunch.css">',
             1,
         )
+
+    # The professional top-level architecture is deliberately concise.
+    # Personal is preserved as legacy content, but belongs in the footer only.
+    page = re.sub(
+        r'(<nav class="main-nav" aria-label="Main navigation">.*?)'
+        r'<a href="/personal/"(?: class="active" aria-current="page")?>Personal</a>'
+        r'(.*?</nav>)',
+        r'\1\2',
+        page,
+        flags=re.S,
+    )
+
+    # Distinguish professional press/conference images from the Personal gallery.
+    page = page.replace('<a href="/photos/">Photos</a>', '<a href="/photos/">Media photos</a>')
+
     html_path.write_text(page, encoding="utf-8")
 
 
@@ -64,4 +79,13 @@ if '/assets/files/CV-Simona-Malovana.pdf' not in profile_block:
     home = home[:profile_match.start()] + updated_block + home[profile_match.end():]
 
 home_path.write_text(home, encoding="utf-8")
-print("Applied final pre-launch polish.")
+
+# Clarify the professional image-download page without changing its stable URL.
+photos_path = DIST / "photos" / "index.html"
+photos = photos_path.read_text(encoding="utf-8")
+photos = photos.replace('<title>Photos — Simona Malovaná</title>', '<title>Media photos — Simona Malovaná</title>')
+photos = photos.replace('<meta property="og:title" content="Photos — Simona Malovaná">', '<meta property="og:title" content="Media photos — Simona Malovaná">')
+photos = photos.replace('<h1>Photos</h1>', '<h1>Media photos</h1>', 1)
+photos_path.write_text(photos, encoding="utf-8")
+
+print("Applied complete final pre-launch polish.")
