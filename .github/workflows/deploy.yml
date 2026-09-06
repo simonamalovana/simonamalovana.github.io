@@ -27,7 +27,7 @@ jobs:
       - name: Build current CV and static site
         run: |
           python3 -m pip install --disable-pip-version-check reportlab
-          python3 -m py_compile scripts/apply_cv_audit.py scripts/fetch_personal_assets.py scripts/build_v4.py scripts/enrich_presentation_links.py scripts/enrich_work_details.py scripts/build_personal.py scripts/validate_migration.py
+          python3 -m py_compile scripts/apply_cv_audit.py scripts/fetch_personal_assets.py scripts/build_v4.py scripts/enrich_presentation_links.py scripts/enrich_work_details.py scripts/build_personal.py scripts/prelaunch_polish.py scripts/validate_migration.py scripts/validate_prelaunch.py
           python3 scripts/fetch_personal_assets.py
           python3 scripts/apply_cv_audit.py
           python3 -m py_compile scripts/build_cv.py
@@ -36,7 +36,9 @@ jobs:
           python3 scripts/enrich_presentation_links.py
           python3 scripts/enrich_work_details.py
           python3 scripts/build_personal.py
+          python3 scripts/prelaunch_polish.py
           python3 scripts/validate_migration.py
+          python3 scripts/validate_prelaunch.py
       - name: Configure Pages
         if: github.event_name != 'pull_request'
         uses: actions/configure-pages@v5
