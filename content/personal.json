@@ -1,0 +1,32 @@
+{
+  "title": "Some of my favorite places",
+  "description": "A personal gallery of places and landscapes that have stayed with me.",
+  "photos": [
+    {"file":"personal-01.jpg","caption":"Dolomites, Italy","source":"https://images.squarespace-cdn.com/content/v1/5e5433393ae4d11882c01e8f/de0693f3-00be-40bc-a4ff-3afecc1d5c2d/dolomites02.JPG?format=1600w"},
+    {"file":"personal-02.jpg","caption":"Dolomites, Italy","source":"https://images.squarespace-cdn.com/content/v1/5e5433393ae4d11882c01e8f/491b0f70-60d3-412d-9f05-83408d9d617c/dolomites03.JPG?format=1600w"},
+    {"file":"personal-03.jpg","caption":"Dolomites, Italy","source":"https://images.squarespace-cdn.com/content/v1/5e5433393ae4d11882c01e8f/d53dffb2-42b3-430d-bf4b-75e281417e1e/dolomites01.JPG?format=1600w"},
+    {"file":"personal-04.jpg","caption":"Preikestolen (Pulpit Rock), Norway","source":"https://images.squarespace-cdn.com/content/v1/5e5433393ae4d11882c01e8f/b1155d8e-385f-4c34-b8d4-e3c5e8b3ffaf/20.jpg?format=1600w"},
+    {"file":"personal-05.jpg","caption":"Kjerag, Norway","source":"https://images.squarespace-cdn.com/content/v1/5e5433393ae4d11882c01e8f/cc6e2a9a-87af-4ef7-92c4-73956c5ed8f8/21.jpg?format=1600w"},
+    {"file":"personal-06.jpg","caption":"Grindelwald, Switzerland","source":"https://images.squarespace-cdn.com/content/v1/5e5433393ae4d11882c01e8f/b37cc846-e9b8-4530-b4ff-2ebee082775c/03.jpg?format=1600w"},
+    {"file":"personal-07.jpg","caption":"Grindelwald, Switzerland","source":"https://images.squarespace-cdn.com/content/v1/5e5433393ae4d11882c01e8f/1776083e-1b19-4213-b7f2-01f6acbcb9aa/04.jpg?format=1600w"},
+    {"file":"personal-08.jpg","caption":"Interlaken, Switzerland","source":"https://images.squarespace-cdn.com/content/v1/5e5433393ae4d11882c01e8f/a2495f90-6e7f-43d0-9299-e909e2106c75/05.jpg?format=1600w"},
+    {"file":"personal-09.jpg","caption":"Dachstein Krippenstein, Austrian Alps","source":"https://images.squarespace-cdn.com/content/v1/5e5433393ae4d11882c01e8f/8f0e8d23-b4f0-463a-a722-24ee5121fbdd/06.jpg?format=1600w"},
+    {"file":"personal-10.jpg","caption":"Dachstein Krippenstein, Austrian Alps","source":"https://images.squarespace-cdn.com/content/v1/5e5433393ae4d11882c01e8f/cbd9443e-cf58-4bc9-a15f-501fe4fe3442/07.jpg?format=1600w"},
+    {"file":"personal-11.jpg","caption":"Hallstatt, Austria","source":"https://images.squarespace-cdn.com/content/v1/5e5433393ae4d11882c01e8f/4ab4809b-dcdd-425f-a245-47df9528f95c/08.jpg?format=1600w"},
+    {"file":"personal-12.jpg","caption":"Cabo da Roca Lighthouse, Portugal","source":"https://images.squarespace-cdn.com/content/v1/5e5433393ae4d11882c01e8f/3a0d158f-875c-4c45-acfc-6d72fc222d1b/09.jpg?format=1600w"},
+    {"file":"personal-13.jpg","caption":"Sintra Coastal Trail, Portugal","source":"https://images.squarespace-cdn.com/content/v1/5e5433393ae4d11882c01e8f/04576bfe-0bd3-42db-88a0-a25e9f071ff3/10.jpg?format=1600w"},
+    {"file":"personal-14.jpg","caption":"Sintra Coastal Trail, Portugal","source":"https://images.squarespace-cdn.com/content/v1/5e5433393ae4d11882c01e8f/8164abfc-587b-42f6-bb82-0de227f1cfd4/11.jpg?format=1600w"},
+    {"file":"personal-15.jpg","caption":"Glenfinnan Viaduct, Highlands, Scotland","source":"https://images.squarespace-cdn.com/content/v1/5e5433393ae4d11882c01e8f/11fd75ed-0846-425d-92f7-9bb193b7cbd7/19.jpg?format=1600w"},
+    {"file":"personal-16.jpg","caption":"Isle of Staffa, Scotland","source":"https://images.squarespace-cdn.com/content/v1/5e5433393ae4d11882c01e8f/d22f9864-df56-4d13-af5e-5c9905649526/18.jpg?format=1600w"},
+    {"file":"personal-17.jpg","caption":"Higashiyama District, Kyoto, Japan","source":"https://images.squarespace-cdn.com/content/v1/5e5433393ae4d11882c01e8f/c69080bf-b848-4367-b071-7fdc4f330b1e/12.jpg?format=1600w"},
+    {"file":"personal-18.jpg","caption":"Fushimi Inari Shrine, Kyoto, Japan","source":"https://images.squarespace-cdn.com/content/v1/5e5433393ae4d11882c01e8f/fe6155df-e40a-4cae-9d4a-f8a7a348d115/13.jpg?format=1600w"},
+    {"file":"personal-19.jpg","caption":"Himeji Castle, Japan","source":"https://images.squarespace-cdn.com/content/v1/5e5433393ae4d11882c01e8f/e40ad6fc-a7ec-450b-99dd-e1a73cd143dd/14.jpg?format=1600w"},
+    {"file":"personal-20.jpg","caption":"Metropolitan Opera House, NYC, US","source":"https://images.squarespace-cdn.com/content/v1/5e5433393ae4d11882c01e8f/aaecd809-7dc0-4984-bc39-9fbae0bcfc2c/15.jpg?format=1600w"},
+    {"file":"personal-21.jpg","caption":"Aoraki/Mount Cook National Park, New Zealand","source":"https://images.squarespace-cdn.com/content/v1/5e5433393ae4d11882c01e8f/27c06c63-cb0d-4687-a26d-01d6a96406d0/01.jpg?format=1600w"},
+    {"file":"personal-22.jpg","caption":"Milford Sound/Piopiotahi, New Zealand","source":"https://images.squarespace-cdn.com/content/v1/5e5433393ae4d11882c01e8f/fe3665b4-a31f-44ce-a55d-a97f2e50f1f0/02.jpg?format=1600w"},
+    {"file":"personal-23.jpg","caption":"Nuuksio National Park, Finland","source":"https://images.squarespace-cdn.com/content/v1/5e5433393ae4d11882c01e8f/a8612159-25da-4084-a952-b9faa39adb60/16.jpg?format=1600w"},
+    {"file":"personal-24.jpg","caption":"Nuuksio National Park, Finland","source":"https://images.squarespace-cdn.com/content/v1/5e5433393ae4d11882c01e8f/012de38e-f6ec-4d2c-8679-1e88d9cb3530/17.jpg?format=1600w"},
+    {"file":"personal-25.jpg","caption":"Prague in the evening, Czechia","source":"https://images.squarespace-cdn.com/content/v1/5e5433393ae4d11882c01e8f/36660d11-a7a7-46c1-9610-1b1eedd127fb/22.jpg?format=1600w"},
+    {"file":"personal-26.jpg","caption":"A view from my office – Powder Tower and Municipal House, Prague, Czechia","source":"https://images.squarespace-cdn.com/content/v1/5e5433393ae4d11882c01e8f/41db2c10-7c58-4d85-9468-ab15083f6c6f/23.jpg?format=1600w"}
+  ]
+}

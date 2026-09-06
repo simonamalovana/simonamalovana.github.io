@@ -3,6 +3,8 @@ name: Build and deploy website
 on:
   push:
     branches: ["main"]
+  pull_request:
+    branches: ["main"]
   schedule:
     - cron: "17 4 * * *"
   workflow_dispatch:
@@ -13,7 +15,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -22,19 +24,30 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Build static site
+      - name: Build current CV and static site
         run: |
-          python3 -m py_compile scripts/build_v4.py scripts/enrich_presentation_links.py
+          python3 -m pip install --disable-pip-version-check reportlab
+          python3 -m py_compile scripts/apply_cv_audit.py scripts/fetch_personal_assets.py scripts/build_v4.py scripts/enrich_presentation_links.py scripts/enrich_work_details.py scripts/build_personal.py scripts/validate_migration.py
+          python3 scripts/fetch_personal_assets.py
+          python3 scripts/apply_cv_audit.py
+          python3 -m py_compile scripts/build_cv.py
+          python3 scripts/build_cv.py
           python3 scripts/build_v4.py
           python3 scripts/enrich_presentation_links.py
+          python3 scripts/enrich_work_details.py
+          python3 scripts/build_personal.py
+          python3 scripts/validate_migration.py
       - name: Configure Pages
+        if: github.event_name != 'pull_request'
         uses: actions/configure-pages@v5
       - name: Upload Pages artifact
+        if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
 
   deploy:
+    if: github.event_name != 'pull_request'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
