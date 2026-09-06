@@ -23,6 +23,7 @@ policy = load("policy.json")
 presentations = load("presentations.json")
 about = load("about.json")
 personal = load("personal.json")
+legacy_resource_links = load("legacy_resource_links.json")
 
 research_by_title = {item["title"]: item for item in research}
 policy_titles = {item["title"] for item in policy}
@@ -78,6 +79,19 @@ research_html = (DIST / "research" / "index.html").read_text(encoding="utf-8")
 require("Gross-flow decompositions" in research_html, "Full Flight from the Front Line abstract was not rendered")
 require("Original CNB Working Paper 12/2023" in research_html, "Secondary research resources were not rendered")
 
+expected_legacy_urls = {
+    "https://drive.google.com/file/d/1lpmxL55CKvT1F8jDUBlZxYP7eLKdaE0A/view?usp=sharing",
+    "https://drive.google.com/open?id=18xA2L3j9ftDD7SALiQn80795UiFTFw_c",
+    "https://drive.google.com/open?id=1dGSA4gPrZdtTOzahChdened8sQDIt0Or",
+    "https://drive.google.com/open?id=1joWeNIZu6QG6ldFKIRPIRVtwYkCDHwf1",
+    "https://drive.google.com/open?id=1o24rYr-eBkWY9WApxl3OzH0C2LhyygXJ",
+    "https://drive.google.com/file/d/1qrLkNqd-qOltOGO3jNVukUhFI7H7D0aM/view?usp=sharing",
+}
+configured_legacy_urls = {url for links in legacy_resource_links.values() for url in links.values()}
+require(expected_legacy_urls <= configured_legacy_urls, "One or more exact legacy Google Drive resource links are missing from the migration map")
+for url in expected_legacy_urls:
+    require(url.replace("&", "&amp;") in research_html or url in research_html, f"Legacy resource link was not rendered: {url}")
+
 policy_html = (DIST / "policy" / "index.html").read_text(encoding="utf-8")
 require("Hospodářské noviny version" in policy_html, "Secondary HN link was not rendered")
 require("Czech National Bank republication" in policy_html, "Secondary Bankast/CNB link was not rendered")
@@ -85,4 +99,4 @@ require("Czech National Bank republication" in policy_html, "Secondary Bankast/C
 cv = DIST / "assets" / "files" / "CV-Simona-Malovana.pdf"
 require(cv.exists() and cv.stat().st_size > 25_000, "Generated CV PDF missing or unexpectedly small")
 
-print("Migration validation passed: legacy content, audited updates, Personal gallery and generated CV are present.")
+print("Migration validation passed: legacy content, exact resource links, audited updates, Personal gallery and generated CV are present.")

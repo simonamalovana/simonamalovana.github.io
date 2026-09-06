@@ -15,8 +15,15 @@ def load(name: str):
     return json.loads((CONTENT / name).read_text(encoding="utf-8"))
 
 
+LEGACY_RESOURCE_LINKS = load("legacy_resource_links.json")
+
+
 def esc(value: str) -> str:
     return html.escape(str(value), quote=True)
+
+
+def resource_url(item: dict, resource: dict) -> str | None:
+    return resource.get("url") or LEGACY_RESOURCE_LINKS.get(item["title"], {}).get(resource["label"])
 
 
 def render_resources(item: dict) -> str:
@@ -26,7 +33,7 @@ def render_resources(item: dict) -> str:
     parts = []
     for resource in resources:
         label = esc(resource["label"])
-        url = resource.get("url")
+        url = resource_url(item, resource)
         if url:
             parts.append(f'<a href="{esc(url)}">{label}<span class="external" aria-hidden="true">↗</span></a>')
         else:
