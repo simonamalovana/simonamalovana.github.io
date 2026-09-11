@@ -1,54 +1,32 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import io
 import json
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from urllib.request import Request, urlopen
 
-from PIL import Image, ImageOps
+from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTENT = ROOT / "content"
 OUT = ROOT / "assets" / "images" / "personal"
 data = json.loads((CONTENT / "personal.json").read_text(encoding="utf-8"))
-OUT.mkdir(parents=True, exist_ok=True)
 
-MAX_DIMENSION = 1400
-JPEG_QUALITY = 82
+EXPECTED_WIDTHS = (480, 800)
+files = []
 
-
-def fetch(photo: dict) -> tuple[str, int]:
-    target = OUT / photo["file"]
-    req = Request(photo["source"], headers={"User-Agent": "Mozilla/5.0 (compatible; simonamalovana.com migration)"})
-    with urlopen(req, timeout=45) as response:
-        body = response.read()
-        content_type = response.headers.get("Content-Type", "")
-    if len(body) < 10_000:
-        raise RuntimeError(f"Downloaded image is unexpectedly small: {photo['file']} ({len(body)} bytes)")
-    if "image" not in content_type.lower():
-        raise RuntimeError(f"Unexpected content type for {photo['file']}: {content_type}")
-
-    with Image.open(io.BytesIO(body)) as source:
-        image = ImageOps.exif_transpose(source).convert("RGB")
-        image.thumbnail((MAX_DIMENSION, MAX_DIMENSION), Image.Resampling.LANCZOS)
-        image.save(target, "JPEG", quality=JPEG_QUALITY, optimize=True, progressive=True)
-
-    return photo["file"], target.stat().st_size
-
-
-sizes = []
-with ThreadPoolExecutor(max_workers=6) as pool:
-    futures = [pool.submit(fetch, photo) for photo in data["photos"]]
-    for future in as_completed(futures):
-        sizes.append(future.result())
-
-missing = [photo["file"] for photo in data["photos"] if not (OUT / photo["file"]).exists()]
-if missing:
-    raise RuntimeError(f"Missing personal gallery assets after download: {missing}")
+for photo in data["photos"]:
+    for width in EXPECTED_WIDTHS:
+        path = OUT / f'{photo["file"]}-{width}.webp'
+        if not path.is_file() or path.stat().st_size == 0:
+            raise RuntimeError(f"Missing Personal gallery asset: {path.relative_to(ROOT)}")
+        with Image.open(path) as image:
+            if image.format != "WEBP":
+                raise RuntimeError(f"Unexpected Personal image format: {path.name} ({image.format})")
+            if image.width != width:
+                raise RuntimeError(f"Unexpected Personal image width: {path.name} ({image.width}px)")
+        files.append(path)
 
 print(
-    f"Fetched and optimized {len(sizes)} personal gallery images "
-    f"({sum(size for _, size in sizes) / 1024 / 1024:.1f} MiB total)."
+    f"Validated {len(data['photos'])} curated Personal photographs in two responsive sizes "
+    f"({sum(path.stat().st_size for path in files) / 1024 / 1024:.1f} MiB total)."
 )

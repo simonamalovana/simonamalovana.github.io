@@ -17,11 +17,21 @@ def esc(value: str) -> str:
 
 
 figures = []
-for photo in data["photos"]:
-    src = f'/assets/images/personal/{esc(photo["file"])}'
+sizes = "(max-width: 720px) calc(100vw - 30px), 570px"
+for index, photo in enumerate(data["photos"]):
+    base = esc(photo["file"])
+    src = f'/assets/images/personal/{base}-800.webp'
+    srcset = (
+        f'/assets/images/personal/{base}-480.webp 480w, '
+        f'/assets/images/personal/{base}-800.webp 800w'
+    )
     caption = esc(photo["caption"])
+    loading = "eager" if index < 2 else "lazy"
+    priority = ' fetchpriority="high"' if index == 0 else ""
     figures.append(
-        f'<figure><img loading="lazy" decoding="async" src="{src}" alt="{caption}">'
+        f'<figure><img loading="{loading}" decoding="async"{priority} src="{src}" '
+        f'srcset="{srcset}" sizes="{sizes}" width="{photo["width"]}" height="{photo["height"]}" '
+        f'alt="{esc(photo["alt"])}">'
         f'<figcaption>{caption}</figcaption></figure>'
     )
 
@@ -44,9 +54,9 @@ personal_dir.mkdir(exist_ok=True)
 (personal_dir / "index.html").write_text(page, encoding="utf-8")
 
 
-# Personal content is preserved from the legacy website, but it is intentionally
-# secondary to the professional site architecture. Keep it in the footer rather
-# than promoting it to the primary navigation.
+# Personal content is intentionally secondary to the professional site
+# architecture. Keep it in the footer rather than promoting it to the primary
+# navigation.
 def add_personal_footer(page_html: str) -> str:
     if 'href="/personal/"' in page_html:
         return page_html
@@ -84,4 +94,4 @@ css += """
 .personal-photo-grid figcaption { text-align: left; color: var(--muted); }
 """
 css_path.write_text(css, encoding="utf-8")
-print(f"Built Personal page with {len(data['photos'])} legacy photos as a secondary footer destination.")
+print(f"Built Personal page with {len(data['photos'])} curated photographs as a secondary footer destination.")

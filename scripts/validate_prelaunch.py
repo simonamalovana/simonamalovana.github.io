@@ -64,17 +64,24 @@ require('font-size: .76rem' in css, "Small metadata typography polish missing")
 require('padding: 10px 0' in css, "Mobile filter tap-target polish missing")
 
 personal_dir = DIST / "assets" / "images" / "personal"
-photos = sorted(personal_dir.glob("*.jpg"))
-require(len(photos) == 26, f"Expected 26 optimized Personal images, found {len(photos)}")
+photos = sorted(personal_dir.glob("*.webp"))
+require(len(photos) == 32, f"Expected 32 responsive Personal images, found {len(photos)}")
 total_bytes = sum(path.stat().st_size for path in photos)
-require(total_bytes <= 12 * 1024 * 1024, f"Personal gallery is still too heavy: {total_bytes / 1024 / 1024:.1f} MiB")
+require(total_bytes <= 3 * 1024 * 1024, f"Personal gallery is still too heavy: {total_bytes / 1024 / 1024:.1f} MiB")
 for path in photos:
-    require(path.stat().st_size <= 900_000, f"Personal image unexpectedly large after optimization: {path.name}")
+    require(path.stat().st_size <= 400_000, f"Personal image unexpectedly large after optimization: {path.name}")
     with Image.open(path) as image:
-        require(max(image.size) <= 1400, f"Personal image exceeds launch dimension cap: {path.name} {image.size}")
+        expected_width = int(path.stem.rsplit("-", 1)[1])
+        require(image.width == expected_width, f"Personal image width mismatch: {path.name} {image.size}")
+
+personal_html = (DIST / "personal" / "index.html").read_text(encoding="utf-8")
+require(personal_html.count("<figure>") == 16, "Personal gallery should contain 16 curated photographs")
+require(personal_html.count('srcset="') == 16, "Every Personal image needs a responsive srcset")
+require(personal_html.count('loading="eager"') == 2, "The first two Personal images should load eagerly")
+require(personal_html.count('loading="lazy"') == 14, "Remaining Personal images should load lazily")
 
 print(
     "Pre-launch validation passed: concise primary navigation, visible contact email, secondary "
     "Personal/Media photos, homepage hierarchy, approved hero, typography, tablet/mobile UX, "
-    f"accessibility and optimized Personal gallery ({total_bytes / 1024 / 1024:.1f} MiB) are ready."
+    f"accessibility and curated responsive Personal gallery ({total_bytes / 1024 / 1024:.1f} MiB) are ready."
 )

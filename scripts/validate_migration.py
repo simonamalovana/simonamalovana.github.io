@@ -63,10 +63,12 @@ roles = {(item["role"], item["institution"]) for item in about["roles"]}
 require(("Managing Editor", "Czech Journal of Economics and Finance") in roles, "Managing Editor role missing")
 require(any(role == "Visiting Scholar" and "Central Bank of Ireland" in institution for role, institution in roles), "Central Bank of Ireland visit missing")
 
-# Preserve every legacy Personal image and page, but keep it out of the professional primary navigation.
-require(len(personal["photos"]) == 26, f"Personal gallery should contain 26 photos, found {len(personal['photos'])}")
+# Keep a concise, curated Personal gallery out of the professional primary navigation.
+require(len(personal["photos"]) == 16, f"Personal gallery should contain 16 photos, found {len(personal['photos'])}")
 for photo in personal["photos"]:
-    require((DIST / "assets" / "images" / "personal" / photo["file"]).exists(), f"Personal image missing from dist: {photo['file']}")
+    for width in (480, 800):
+        filename = f'{photo["file"]}-{width}.webp'
+        require((DIST / "assets" / "images" / "personal" / filename).exists(), f"Personal image missing from dist: {filename}")
 
 require((DIST / "personal" / "index.html").exists(), "Personal page not generated")
 personal_html = (DIST / "personal" / "index.html").read_text(encoding="utf-8")
