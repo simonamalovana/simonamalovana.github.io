@@ -166,20 +166,28 @@ Local generated route/asset checks are feasible and should become automated. The
 
 ## Highest-value next milestones
 
-### Milestone 1 — Production-parity, non-mutating quality gate (proposed first goal)
+### Milestone 1 — Establish a reproducible, non-mutating production build and comprehensive parity gate (proposed first goal)
 
-Make the current build deterministic and understandable without intentionally changing rendered pages: create one documented build entry point, stop build-time source mutation, pin dependencies, add structural/local-link/metadata checks, and archive or clearly fence legacy entry points. Establish a checked baseline for every route and asset.
+Make the current build repeatable and understandable without intentionally changing rendered pages: create one authoritative build command, stop build-time tracked-source mutation, pin Python dependencies, add route/content/internal-link/asset/metadata checks, and ensure CI runs exactly the same build and parity gate. Establish a semantic/normalized baseline for every route and asset while allowing legitimate PDF metadata and date-derived differences.
 
-**Acceptance criteria**
+**Implementation and PR acceptance criteria**
 
-- One command reproduces the ordered CI build from a clean checkout.
-- Running it leaves tracked files unchanged.
+- One authoritative command reproduces the ordered production build and parity gate from a clean checkout, and CI invokes that same command.
+- Running it repeatedly leaves tracked files unchanged and produces equivalent normalized/semantic output; exact-byte equality is not required for PDFs or legitimate date-derived output.
 - Dependency versions are pinned with a documented update process.
 - The output retains all seven HTML routes, the CV, 33 research items, 16 policy/media items, 49 presentations, 8 organized events, four media photos, 16 personal photos/two sizes, known legacy resources, RSS, robots, and sitemap.
-- Except for approved nondeterministic date-derived Upcoming content and harmless serialization, a reviewed production snapshot/DOM manifest shows no user-visible change.
-- Automated checks cover JSON parsing/schema invariants, duplicate IDs, internal links/assets/fragments, one H1, titles/descriptions/canonicals/OG, image alt/dimensions policy, structured-data parsing, RSS/sitemap/robots consistency, and generated size budgets.
+- A reviewed normalized production snapshot/DOM manifest shows no change to positioning, visual design, homepage narrative, navigation, calls to action, editorial meaning, public URLs, domain assumptions, or Pages settings.
+- Automated checks cover JSON parsing/schema invariants, required routes/content, internal links/assets/fragments, unique titles/descriptions/canonicals/Open Graph metadata, structured-data parsing, RSS/sitemap/robots consistency, generated size budgets, and inexpensive accessibility fundamentals already represented by the site (landmarks, one H1, skip link, control labels/states, and image alternatives).
+- Full axe, Lighthouse, screen-reader, contrast, zoom/reflow, and browser accessibility work remains in Milestone 3.
 - Pull requests run the gate; non-PR deploy behavior remains unchanged.
-- Rollback is a single revert, and the existing validators remain green.
+- The autonomous implementation ends with a focused, reviewable pull request containing validation evidence and a rollback plan; it does not merge its own work.
+- Existing migration and prelaunch validators remain green.
+
+**Post-merge production verification (not part of implementation Definition of Done)**
+
+- After a human merges the implementation PR, an authorized owner/releaser observes the `main` Pages run and confirms the deployed SHA.
+- From unrestricted networking, the releaser smoke-tests public routes/assets, the custom domain and `github.io` behavior, TLS/headers, RSS, sitemap, and filters.
+- Any production mismatch triggers the documented rollback procedure. The implementation agent may assist only when separately asked; it must not merge merely to perform these checks.
 
 ### Milestone 2 — Verify content provenance and resolve ownership ambiguity
 
@@ -200,12 +208,13 @@ Only after content semantics and regression safety are established, refine the h
 ## Validation strategy for future work
 
 1. **Repository:** clean status, JSON parse/schema checks, selected-script compilation, `git diff --check`, and secret/large-file review.
-2. **Build:** clean isolated environment, pinned dependencies, one entry command, validators, repeat build/hash comparison, and assertion that tracked files remain unchanged.
-3. **Generated site:** HTML/JSON-LD/RSS/XML validation; internal URL, asset, anchor, canonical, sitemap, and accessibility rules; item-count/content-preservation manifest.
-4. **Browser:** desktop/tablet/320–375 px mobile screenshots, keyboard-only flows, filters, skip link, zoom to 200%/400%, reduced-motion mode, and JavaScript-disabled readability.
+2. **Build:** clean isolated environment, pinned dependencies, one authoritative command, validators, repeat normalized/semantic comparison, and assertion that tracked files remain unchanged.
+3. **Generated site:** HTML/JSON-LD/RSS/XML validation; internal URL, asset, anchor, canonical, and sitemap rules; item-count/content-preservation manifest; and inexpensive accessibility fundamentals already present in the markup.
+4. **Dedicated accessibility milestone:** desktop/tablet/320–375 px browser testing, axe/Lighthouse, keyboard and screen-reader flows, contrast, skip-link behavior, zoom/reflow, reduced-motion mode, and JavaScript-disabled readability.
 5. **External:** link checker with retries and classified failures; verify DOI/publisher/video/event/profile/CNB destinations manually where automation is blocked.
-6. **Release:** review deploy diff/artifact, merge only with approval, watch the `main` Pages run, smoke-test custom domain and `github.io` redirect behavior, check TLS/security/cache headers, and retain revert instructions.
-7. **Ongoing:** monthly content/link review, pre-event and post-event checks, quarterly accessibility/SEO audit, and deliberate dependency updates rather than surprise scheduled upgrades.
+6. **Implementation handoff:** end autonomous implementation with a reviewable PR, validation evidence, and rollback instructions; never merge solely to verify production.
+7. **Post-merge release:** after human approval and merge, an authorized owner/releaser watches the `main` Pages run, smoke-tests custom-domain and `github.io` behavior, checks TLS/security/cache headers, and executes rollback if needed.
+8. **Ongoing:** monthly content/link review, pre-event and post-event checks, quarterly accessibility/SEO audit, and deliberate dependency updates rather than surprise scheduled upgrades.
 
 ## Product-owner decisions (maximum five)
 

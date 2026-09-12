@@ -5,9 +5,9 @@
 
 ## Approval state
 
-**No implementation goal is approved yet.**
+**No implementation goal is approved yet. This remains true until this planning pull request has been reviewed and merged.**
 
-Codex must not redesign, rewrite, restructure, or intentionally change the deployed website until the product owner approves a goal and any relevant decisions in `docs/PLAN.md`. The present repository change adds documentation only and does not change the build, generated artifact, content, assets, workflow, or production behavior.
+Codex must not begin the proposed implementation, redesign, rewrite, restructure, or intentionally change the deployed website during this planning revision. After this planning pull request is reviewed and merged, implementation still begins only through an explicit product-owner task or approval. The present repository change adds documentation only and does not change the build, generated artifact, content, assets, workflow, or production behavior.
 
 ## Established baseline
 
@@ -35,13 +35,13 @@ Direct access to the live domains was blocked by the audit environment's outboun
 ## Constraints for the next session
 
 1. Read root `AGENTS.md`, `docs/PLAN.md`, and `docs/NEXT_GOAL.md` before editing.
-2. Ask for/confirm goal approval and applicable product-owner decisions.
+2. Confirm this planning pull request was reviewed and merged, then ask for/confirm explicit implementation-goal approval and applicable product-owner decisions.
 3. Reconfirm `main`/deployed SHA and a clean working tree; this status can become stale.
 4. Preserve production output and content unless an owner-approved change explicitly says otherwise.
-5. Use a feature branch, run the full gate, provide screenshots for perceptible changes, and document rollback.
+5. Use a feature branch, run the full gate, provide parity evidence, document rollback, and end with a reviewable pull request. Do not merge the implementation work or count post-merge Pages checks as part of its Definition of Done.
 
 ## Recommended approval statement
 
 The product owner can authorize the proposed work with wording such as:
 
-> Approve the production-parity, non-mutating quality-gate goal in `docs/NEXT_GOAL.md`. Preserve current rendered behavior and content; bring back any unavoidable visible or editorial differences for separate approval.
+> Approve “Establish a reproducible, non-mutating production build and comprehensive parity gate” in `docs/NEXT_GOAL.md`. Preserve current positioning, visual design, homepage narrative, navigation, calls to action, content meaning, URLs, domain, and Pages settings; end with a reviewable pull request and bring back any unavoidable difference for separate approval.
