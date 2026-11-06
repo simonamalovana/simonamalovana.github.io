@@ -41,7 +41,7 @@
       <div class="chart-card">
         <div class="chart-top">
           <div><p class="eyebrow">01 / EXPLORE</p><h2>Two rates. Different clocks.</h2>
-            <p>Interest rates, percent per annum. Mortgage rate: monthly average on new business. Policy rate: value effective at month-end.</p>
+            <p>Interest rates, percent per annum. Mortgage rate: monthly new-business interest rate. Policy rate: value effective at month-end.</p>
           </div>
           <div class="chart-actions"><button class="story-button" id="download-csv" type="button" disabled>↓ Download CSV</button></div>
         </div>
@@ -81,7 +81,7 @@
       </div>
       <div class="story-reading story-code-section" id="reproduce">
         <div><p class="eyebrow">03 / REPRODUCE</p><h2>From chart to reproducible analysis.</h2></div>
-        <div class="reading-content"><p>The full companion R script uses <code>aradR</code> to retrieve the selected ARAD mortgage indicator, checks the definition, and combines it with the official CNB policy-rate history. You'll need a personal ARAD API key and to confirm the correct ARAD series ID.</p>
+        <div class="reading-content"><p>The full companion R script uses <code>aradR</code> to retrieve the selected ARAD mortgage indicator, inspects its metadata, and combines it with the official CNB policy-rate history. You will need a personal ARAD API key. The interactive chart itself uses the corresponding public ECB MIR series, so visitors need no credentials.</p>
         <div class="code-card">
           <div class="code-card-top"><span>R · aradR</span><button type="button" id="copy-code" class="copy-button">Copy starter code</button></div>
 <pre><code id="starter-code">install.packages("aradR")
@@ -90,10 +90,11 @@ library(aradR)
 # Use your personal ARAD API key
 # ARAD_API_KEY is read from ~/.Renviron
 
-# Find and verify the exact mortgage-rate series in ARAD,
-# then replace INDICATOR_ID with its validated identifier:
+# Inspect the mortgage-rate series metadata in ARAD:
+info <- arad_info("SMIRNOOBUVMIRS305CZK011111")
+
 mortgage <- arad_get(
-  indicator_ids = "INDICATOR_ID",
+  indicator_ids = "SMIRNOOBUVMIRS305CZK011111",
   from = "2015-01-01"
 )
 </code></pre>
@@ -102,7 +103,7 @@ mortgage <- arad_get(
         </div>
       </div>
       <section class="method-card"><p class="eyebrow">04 / DATA & METHODS</p><h2>Definitions matter.</h2><dl>
-        <div><dt>Mortgage series</dt><dd>New business, loans to households for house purchase, Czech koruna, total across initial rate fixation periods. Annualised agreed rate / narrowly defined effective rate, percent per annum. Monthly frequency. ECB MIR series <code>MIR.M.CZ.B.A2C.A.R.A.2250.CZK.N</code>, based on Czech banking statistics.</dd></div>
+        <div><dt>Mortgage series</dt><dd>New business, loans to households for house purchase, Czech koruna, total across initial rate fixation periods. Annualised agreed rate / narrowly defined effective rate, percent per annum. Monthly frequency. Corresponding ARAD indicator <code>SMIRNOOBUVMIRS305CZK011111</code>. The public chart is populated from ECB MIR series <code>MIR.M.CZ.B.A2C.A.R.A.2250.CZK.N</code>, based on Czech banking statistics.</dd></div>
         <div><dt>Policy rate</dt><dd>CNB two-week repo rate, recorded as the rate in effect on the last calendar day of each month, percent per annum. This is a month-end observation, not the monthly average.</dd></div>
         <div><dt>Coverage and updates</dt><dd>2015 onward; the latest month is the latest available mortgage observation. Data are retrieved during website generation, so this is not a live intraday feed. The latest mortgage observation may be preliminary and subsequently revised.</dd></div>
         <div><dt>Interpretation</dt><dd>Descriptive comparison, not a causal identification of policy transmission. Differences in definitions, timing and horizons are material.</dd></div>
