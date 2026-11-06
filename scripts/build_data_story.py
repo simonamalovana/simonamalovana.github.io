@@ -108,7 +108,7 @@ def add_home_link(html: str) -> str:
         '<a href="/data-stories/mortgage-rates/">Explore the first story →</a>'
         '</div><div class="recent-list"><article class="recent-row">'
         '<div class="recent-aside"><span>Interactive analysis</span>'
-        '<span>Powered by aradR</span></div><div>'
+        '<span>Reproduce with aradR</span></div><div>'
         '<h3><a href="/data-stories/mortgage-rates/">How quickly do mortgage rates '
         'follow monetary policy?</a></h3>'
         '<p>Explore Czech interest rates, download data and reproduce the analysis in R.</p>'
