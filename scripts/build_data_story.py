@@ -138,7 +138,10 @@ def main():
         encoding="utf-8",
     )
     home = DIST / "index.html"
-    home.write_text(add_home_link(home.read_text(encoding="utf-8")), encoding="utf-8")
+    if data["status"] == "verified":
+        home.write_text(add_home_link(home.read_text(encoding="utf-8")), encoding="utf-8")
+    else:
+        print("Skipping homepage promotion until complete real data are verified.")
     sitemap = DIST / "sitemap.xml"
     xml = sitemap.read_text(encoding="utf-8")
     address = "https://simonamalovana.com/data-stories/mortgage-rates/"
