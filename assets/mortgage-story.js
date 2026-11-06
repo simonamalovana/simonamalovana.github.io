@@ -171,6 +171,15 @@
       });
       tbody.append(tr);
     });
+    const latest = rows[rows.length - 1];
+    const previousYear = rows.find(d => d.month === String(Number(latest.month.slice(0, 4)) - 1) + latest.month.slice(4));
+    document.getElementById("mortgage-month").textContent = latest.month;
+    document.getElementById("latest-mortgage").textContent = number(latest.mortgage);
+    document.getElementById("latest-repo").textContent = number(latest.repo);
+    document.getElementById("yearly-change").textContent = previousYear
+      ? (latest.mortgage - previousYear.mortgage >= 0 ? "+" : "") + number(latest.mortgage - previousYear.mortgage)
+      : "n/a";
+    document.getElementById("story-highlights").hidden = false;
     render();
   }).catch(error => {
     console.warn("Mortgage story: verified feed not available", error);
