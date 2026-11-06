@@ -17,6 +17,15 @@
 .chart-actions{flex-shrink:0}
 .story-button{background:#ecf4f1;border:1px solid #b8d8d0;border-radius:7px;padding:10px 14px;color:#0e5f5c;font-size:.81rem;font-weight:600;cursor:pointer}
 .story-button:hover:not(:disabled){background:#e0efeb}.story-button:disabled{opacity:.5;cursor:not-allowed}
+.story-highlights{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border-top:1px solid #e5eeeb;border-bottom:1px solid #e5eeeb;margin-top:26px}
+.story-highlights[hidden]{display:none}
+.story-highlights>div{padding:20px 17px;border-right:1px solid #e5eeeb}
+.story-highlights>div:first-child{padding-left:0}
+.story-highlights>div:last-child{border-right:0}
+.story-highlights .highlight-label{display:block;font-size:.73rem;color:#71827c;line-height:1.6}
+.story-highlights strong{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:500;letter-spacing:-.04em;color:#244f49;margin-right:5px}
+.story-highlights small{font-size:.72rem;color:#71827c}
+@media(max-width:560px){.story-highlights{grid-template-columns:1fr 1fr}.story-highlights>div{padding:12px 8px}.story-highlights>div:first-child{padding-left:0}.story-highlights>div:nth-child(2){border-right:0}.story-highlights>div:last-child{grid-column:span 2;padding-left:0;border-top:1px solid #e5eeeb}}
 .chart-controls{display:flex;flex-wrap:wrap;gap:20px 45px;justify-content:space-between;padding:28px 0 20px}
 .chart-controls fieldset{border:0;margin:0;padding:0;min-width:0}.chart-controls legend{margin-bottom:8px;font-size:.74rem;font-weight:600;color:#556966}
 .pill-group{display:flex;gap:6px;flex-wrap:wrap}
